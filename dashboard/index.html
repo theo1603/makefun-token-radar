@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar: pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="pulse" aria-hidden="true"></span>
+    <div>
+      <h1>Token Radar</h1>
+      <p class="tag">Pre-token protocols, ranked by what a launch would be worth &mdash; and how to farm each one.</p>
+    </div>
+  </div>
+  <div class="meta" id="meta"></div>
+</header>
+<section class="stats" id="stats" aria-label="Board summary"></section>
+<nav class="tabs" aria-label="Views">
+  <button type="button" data-tab="board" class="active">Pre-token board</button>
+  <button type="button" data-tab="live">Live tokens &middot; calibration</button>
+  <button type="button" data-tab="model">How it scores</button>
+</nav>
+<main>
+  <section id="tab-board">
+    <div class="controls" id="controls"></div>
+    <div class="count" id="count"></div>
+    <section class="detail" id="detail" aria-label="Protocol detail"></section>
+    <div class="tablewrap"><table id="board" aria-label="Ranked pre-token protocols"></table></div>
+    <div class="pager" id="pager"></div>
+  </section>
+  <section id="tab-live" hidden>
+    <p class="note">Protocols whose token already trades are <strong>not</strong> on the board. They are the market the model calibrates against: each one's market cap over its TVL sets the multiple its category's pre-token protocols are scored with.</p>
+    <div class="tablewrap"><table id="livetable" aria-label="Live-token protocols"></table></div>
+  </section>
+  <section id="tab-model" hidden>
+    <div class="modelgrid">
+      <div class="card">
+        <h2>The model, in one line</h2>
+        <p class="formula">implied value = TVL &times; category multiple &times; growth &times; maturity &times; breadth</p>
+        <ul class="factors">
+          <li><strong>Category multiple</strong> &mdash; the median market-cap/TVL of the snapshot's live-token protocols in the category, each ratio winsorized to 0.005&ndash;5&times; so one tiny-TVL outlier cannot set a category, shrunk toward the global median (prior weight 5), clamped to 0.02&ndash;2.00. No multiple is hardcoded.</li>
+          <li><strong>Growth</strong> &mdash; 1 + 0.5 &times; the 7-day TVL change, clamped to &minus;50%..+100%.</li>
+          <li><strong>Maturity</strong> &mdash; 0.65 + 0.35 &times; age capped at 3 years; a protocol that has run longer with no token scores higher.</li>
+          <li><strong>Breadth</strong> &mdash; +2% per extra chain, up to +10%.</li>
+        </ul>
+        <p class="note">A protocol is on the board when its DefiLlama record carries no token and it is not a wrapped, staked or bridged product of one that trades &mdash; the watchlist's rule, without its $50M floor. The board says a protocol <em>records</em> no token, never that it has none.</p>
+      </div>
+      <div class="card">
+        <h2>Calibration, from this snapshot</h2>
+        <div class="tablewrap"><table id="caltable" aria-label="Category calibration"></table></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>TVL vs implied value</h2>
+      <div id="scatter"></div>
+      <p class="note">Each dot is one board row (log scales). Amber: on the $50M watchlist. Teal: found below the floor.</p>
+    </div>
+    <p class="disclaimer">Implied value is this radar's own claim from the snapshot's figures, not a prediction that a token launches, when it launches, or what it trades at. Farm plans are starting points: check the protocol's own pages, never pay to claim, and never farm with money you need back.</p>
+  </section>
+</main>
+<footer>Data: DefiLlama protocol snapshot, as of <span id="asof"></span>. The page runs with no network: every number it shows is in the data file beside it.</footer>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
